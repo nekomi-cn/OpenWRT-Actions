@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Test Build
+name: Lede Build
 
 on:
   repository_dispatch:
@@ -24,9 +24,9 @@ env:
   REPO_URL: https://github.com/ZMuSiShui/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: Test.config
-  DIY_P1_SH: T1.sh
-  DIY_P2_SH: T2.sh
+  CONFIG_FILE: Lede.config
+  DIY_P1_SH: Lede1.sh
+  DIY_P2_SH: Lede2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -154,7 +154,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::TEST-$(date "+%Y.%m.%d")"
+          echo "::set-output name=release_tag::Lede-$(date "+%Y.%m.%d")"
           touch release.txt
           [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
           [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
