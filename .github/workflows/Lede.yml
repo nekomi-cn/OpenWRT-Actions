@@ -21,7 +21,7 @@ on:
     - cron: 0 0 * * *
 
 env:
-  REPO_URL: https://github.com/ZMuSiShui/lede
+  REPO_URL: https://github.com/nekomi-cn/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: Lede.config
