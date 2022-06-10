@@ -22,7 +22,7 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_BRANCH: 91b3516ba1c116f6f7d78ffe742f8806c1001511
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: Lede.config
   DIY_P1_SH: Lede1.sh
