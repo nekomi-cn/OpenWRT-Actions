@@ -79,8 +79,11 @@ jobs:
           $GITHUB_WORKSPACE/$DIY_P1_SH
           
       - name: Change Kernel
+        working-directory: /workdir
         run: |
+          cd openwrt
           sed -i 's/5.10/5.15/g' target/linux/rockchip/Makefile
+          cd ..
 
       - name: Update feeds
         working-directory: openwrt
