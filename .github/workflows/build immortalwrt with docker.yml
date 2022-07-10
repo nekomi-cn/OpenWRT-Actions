@@ -15,7 +15,7 @@ env:
   REPO_BRANCH: openwrt-21.02
   CHECK_OUT: ''
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: "config/immortalwrt with docker.config"
+  CONFIG_FILE: config/immortalwrt-with-docker.config
   DIY_P1_SH: script/immortalwrt1.sh
   DIY_P2_SH: script/immortalwrt2.sh
   UPLOAD_BIN_DIR: false
