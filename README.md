@@ -4,4 +4,7 @@
 
 > 使用 immortalwrt 21.02 分支( 测试版 )
 
-每日清晨自动编译，Releases 可下载最新镜像。
+每日清晨自动编译，Releases 可下载最新镜像，后台: 192.168.8.1 密码: password。
+
+![状态](./images/5.10.png)
+![服务](./images/5.10services.png)
