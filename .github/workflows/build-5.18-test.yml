@@ -1,4 +1,4 @@
-name: Build OpenWRT
+name: Build Lede - Kernel 5.18
 
 on:
   repository_dispatch:
