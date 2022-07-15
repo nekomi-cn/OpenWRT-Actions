@@ -1,4 +1,4 @@
-name: Build Lede - Kernel 5.18
+name: Build Lede OpenWRT - Kernel 5.18
 
 on:
   repository_dispatch:
@@ -9,7 +9,7 @@ env:
   REPO_BRANCH: master
   CHECK_OUT: 9a3ab942b07ee88922a5163bac54b4079276a0d1
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/test.config
+  CONFIG_FILE: config/lede-5.18.config
   DIY_P1_SH: script/lede5.18.sh
   DIY_P2_SH: script/lede2.sh
   UPLOAD_BIN_DIR: false
@@ -132,6 +132,24 @@ jobs:
         with:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
+
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-$(date "+%Y.%m.%d")"
+          touch release.txt
+          echo "::set-output name=status::success"
+
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ env.FIRMWARE }}/*
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
