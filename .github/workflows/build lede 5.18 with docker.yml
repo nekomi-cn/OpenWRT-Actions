@@ -13,7 +13,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  CHECK_OUT: 
+  CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: config/lede-5.18-with-docker.config
   DIY_P1_SH: script/lede5.18.sh
@@ -71,14 +71,6 @@ jobs:
       - name: Update feeds
         working-directory: openwrt
         run: ./scripts/feeds update -a
-
-      - name: 去除重复应用包
-        run: |
-          cd openwrt
-          sudo rm -rf ./feeds/packages/net/mosdns && cp -rf ./feeds/kenzo/mosdns ./feeds/packages/net/mosdns
-          sed -i 's/mosdns_neo/mosdns/g' ./feeds/kenzo/luci-app-mosdns/Makefile
-          sed -i 's/mosdns_neo/mosdns/g' ./feeds/kenzo/mosdns/Makefile
-          sed -i 's/mosdns_neo/mosdns/g' ./feeds/packages/net/mosdns/Makefile
 
       - name: Install feeds
         working-directory: openwrt
