@@ -1,4 +1,4 @@
-name: Build Lede OpenWRT
+name: Build Lede OpenWRT With Docker- Kernel 5.15
 
 on:
   repository_dispatch:
@@ -15,8 +15,8 @@ env:
   REPO_BRANCH: master
   CHECK_OUT: 9a3ab942b07ee88922a5163bac54b4079276a0d1
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/lede.config
-  DIY_P1_SH: script/lede1.sh
+  CONFIG_FILE: "config/lede-5.15-with-docker.config"
+  DIY_P1_SH: script/lede5.15.sh
   DIY_P2_SH: script/lede2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -143,7 +143,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-$(date "+%Y.%m.%d")"
+          echo "::set-output name=release_tag::OpenWRT-Lede-5.15-With-Docker-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "::set-output name=status::success"
 

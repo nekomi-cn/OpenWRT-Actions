@@ -1,4 +1,4 @@
-name: Build immortalwrt OpenWRT
+name: Build Lede OpenWRT With Docker- Kernel 5.18
 
 on:
   repository_dispatch:
@@ -11,13 +11,13 @@ on:
     - cron: 0 0 * * *
 
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
-  REPO_BRANCH: openwrt-21.02
-  CHECK_OUT: ''
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  CHECK_OUT: 9a3ab942b07ee88922a5163bac54b4079276a0d1
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/immortalwrt.config
-  DIY_P1_SH: script/immortalwrt1.sh
-  DIY_P2_SH: script/immortalwrt2.sh
+  CONFIG_FILE: config/lede-5.18-with-docker.config
+  DIY_P1_SH: script/lede5.18.sh
+  DIY_P2_SH: script/lede2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -52,6 +52,14 @@ jobs:
           df -hT $PWD
           git clone $REPO_URL -b $REPO_BRANCH openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+      - name: Check out old code
+        working-directory: /workdir
+        if: env.CHECK_OUT != ''
+        run: |
+          cd openwrt
+          git checkout $CHECK_OUT
+          cd ..
 
       - name: Load custom feeds
         run: |
@@ -135,7 +143,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-immortalwrt-$(date "+%Y.%m.%d")"
+          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "::set-output name=status::success"
 
