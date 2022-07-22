@@ -13,7 +13,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  CHECK_OUT: 9a3ab942b07ee88922a5163bac54b4079276a0d1
+  CHECK_OUT: 
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: config/lede-5.18-with-docker.config
   DIY_P1_SH: script/lede5.18.sh
