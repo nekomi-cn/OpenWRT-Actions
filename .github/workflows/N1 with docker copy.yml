@@ -114,7 +114,7 @@ jobs:
           path: |
             /workdir/openwrt/build_dir/
             /workdir/openwrt/staging_dir/
-          key: ${{ runner.os }}-${{ hashFiles('cache/toolchains') }}
+          key: ${{ runner.os }}-${{ hashFiles('cache/N1') }}
 
       - name: Load custom feeds
         run: |
