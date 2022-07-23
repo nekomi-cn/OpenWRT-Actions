@@ -1,8 +1,54 @@
-name: Build Lede OpenWRT With Docker- Kernel 5.18
+name: N1 OpenWRT With Docker
 
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      openwrt_soc:
+        description: "Select Amlogic SoC"
+        required: false
+        default: "s905d"
+        type: choice
+        options:
+          - all
+          - s905x3_s905d_s912
+          - a311d
+          - s922x
+          - s922x-n2
+          - s922x-reva
+          - s905x3
+          - s905x2
+          - s905x2-km3
+          - s912
+          - s912-m8s
+          - s905d
+          - s905d-ki
+          - s905x
+          - s905w
+          - s905
+          - s905l3a
+      openwrt_kernel:
+        description: "Select kernel version"
+        required: false
+        default: "5.15.50"
+        type: choice
+        options:
+          - 5.4.200_5.10.125
+          - 5.10.125_5.15.50
+          - 5.15.45_5.18.5
+          - 5.4.200
+          - 5.10.125
+          - 5.15.50
+          - 5.18.5
+      auto_kernel:
+        description: "Auto use the latest kernel"
+        required: false
+        default: true
+        type: boolean
+      openwrt_size:
+        description: "Set the rootfs size(Unit: MiB)."
+        required: false
+        default: "960"
   push:
     branches: [master]
   pull_request:
@@ -15,9 +61,9 @@ env:
   REPO_BRANCH: master
   CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/lede-5.18-with-docker.config
-  DIY_P1_SH: script/lede5.18.sh
-  DIY_P2_SH: script/lede2.sh
+  CONFIG_FILE: config/n1.config
+  DIY_P1_SH: script/n1.sh
+  DIY_P2_SH: script/n1-2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -60,6 +106,15 @@ jobs:
           cd openwrt
           git checkout $CHECK_OUT
           cd ..
+
+      - name: Cache
+        id: cache-toolchains
+        uses: actions/cache@main
+        with:
+          path: |
+            /workdir/openwrt/build_dir/
+            /workdir/openwrt/staging_dir/
+          key: ${{ runner.os }}-${{ hashFiles('cache/toolchains') }}
 
       - name: Load custom feeds
         run: |
@@ -104,62 +159,66 @@ jobs:
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
           echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
+      - name: Build OpenWrt firmware
+        if: steps.compile.outputs.status == 'success' && !cancelled()
+        uses: ophub/amlogic-s9xxx-openwrt@main
+        with:
+          openwrt_path: openwrt/bin/targets/*/*/*rootfs.tar.gz
+          openwrt_soc: ${{ github.event.inputs.openwrt_soc }}
+          openwrt_kernel: ${{ github.event.inputs.openwrt_kernel }}
+          auto_kernel: ${{ github.event.inputs.auto_kernel }}
+          openwrt_size: ${{ github.event.inputs.openwrt_size }}
+
       - name: Check space usage
         if: (!cancelled())
         run: df -hT
-
-      - name: Upload bin directory
-        uses: actions/upload-artifact@main
-        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-        with:
-          name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-          path: openwrt/bin
 
       - name: Organize files
         id: organize
         if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
-          cd openwrt/bin/targets/*/*
+          cd ${{ env.PACKAGED_OUTPUTPATH }}
           rm -rf packages
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo "::set-output name=status::success"
 
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
-        if: steps.organize.outputs.status == 'success' && !cancelled()
+        if: env.PACKAGED_STATUS == 'success' && !cancelled()
         with:
-          name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-          path: ${{ env.FIRMWARE }}
+          name: OpenWrt_s905d_n1_lede_${{ env.PACKAGED_OUTPUTDATE }}
+          path: ${{ env.PACKAGED_OUTPUTPATH }}
 
-      - name: Generate release tag
-        id: tag
-        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-        run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-$(date "+%Y.%m.%d")"
-          touch release.txt
-          echo "::set-output name=status::success"
-
-      - name: Upload firmware to release
-        uses: softprops/action-gh-release@v1
-        if: steps.tag.outputs.status == 'success' && !cancelled()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload OpenWrt Firmware to Release
+        uses: ncipollo/release-action@main
+        if: env.PACKAGED_STATUS == 'success' && !cancelled()
         with:
-          tag_name: ${{ steps.tag.outputs.release_tag }}
-          body_path: release.txt
-          files: ${{ env.FIRMWARE }}/*
+          tag: OpenWrt_S905D_N1_Lede_${{ env.PACKAGED_OUTPUTDATE }}
+          artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+          allowUpdates: true
+          token: ${{ secrets.GH_TOKEN }}
+          body: |
+            This is OpenWrt firmware for Amlogic s905d N1 box
+            * Firmware information
+            Default IP: 192.168.43.1
+            Default username: root
+            Default password: password
+            Default WIFI name: OpenWrt
+            Default WIFI password: none
+            Install to EMMC: Login to OpenWrt → System → Amlogic Service → Install OpenWrt
+
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
         with:
           retain_days: 1
-          keep_minimum_runs: 3
+          keep_minimum_runs: 4
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.1.0
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
-          keep_latest: 3
+          keep_latest: 4
           delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

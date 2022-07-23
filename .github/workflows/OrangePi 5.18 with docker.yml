@@ -1,4 +1,4 @@
-name: Build Lede OpenWRT With Docker- Kernel 5.15
+name: OrangePi OpenWRT With Docker - Kernel 5.18
 
 on:
   repository_dispatch:
@@ -15,9 +15,9 @@ env:
   REPO_BRANCH: master
   CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: "config/lede-5.15-with-docker.config"
-  DIY_P1_SH: script/lede5.15.sh
-  DIY_P2_SH: script/lede2.sh
+  CONFIG_FILE: config/OrangePi-5.18-with-docker.config
+  DIY_P1_SH: script/OrangePi5.18.sh
+  DIY_P2_SH: script/OrangePi2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
@@ -60,6 +60,15 @@ jobs:
           cd openwrt
           git checkout $CHECK_OUT
           cd ..
+
+      - name: Cache
+        id: cache-toolchains
+        uses: actions/cache@main
+        with:
+          path: |
+            /workdir/openwrt/build_dir/
+            /workdir/openwrt/staging_dir/
+          key: ${{ runner.os }}-${{ hashFiles('cache/toolchains') }}
 
       - name: Load custom feeds
         run: |
@@ -135,7 +144,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-5.15-With-Docker-$(date "+%Y.%m.%d")"
+          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "::set-output name=status::success"
 
@@ -153,13 +162,13 @@ jobs:
         uses: GitRML/delete-workflow-runs@main
         with:
           retain_days: 1
-          keep_minimum_runs: 3
+          keep_minimum_runs: 4
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.1.0
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
-          keep_latest: 3
+          keep_latest: 4
           delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
