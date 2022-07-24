@@ -182,7 +182,7 @@ jobs:
 
       - name: Upload OpenWrt Firmware to Release
         uses: ncipollo/release-action@main
-        if: env.PACKAGED_STATUS == 'success' && !cancelled()
+        if: steps.compile.outputs.status == 'success' && env.PACKAGED_STATUS == 'success' && !cancelled()
         with:
           tag: OpenWrt_S905D_N1_Lede_${{ env.PACKAGED_OUTPUTDATE }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
