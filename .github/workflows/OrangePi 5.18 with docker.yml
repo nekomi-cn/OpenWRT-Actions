@@ -66,15 +66,11 @@ jobs:
         uses: actions/cache@main
         with:
           path: |
-            /workdir/openwrt/build_dir/
-            /workdir/openwrt/staging_dir/
-          key: ${{ runner.os }}-${{ hashFiles('cache/OrangePi') }}
-
-      - name: Move Cache
-        if: ${{ steps.cache-toolchains.outputs.cache-hit == 'true' }}
-        run: |
-            mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/build_dir/ /workdir/openwrt/build_dir/
-            mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/staging_dir/ /workdir/openwrt/staging_dir/
+            /workdir/openwrt/build_dir/host*
+            /workdir/openwrt/build_dir/tool*
+            /workdir/openwrt/staging_dir/host*
+            /workdir/openwrt/staging_dir/tool*
+          key: ${{ runner.os }}-${{ hashFiles('cache/OrangePi-5.18') }}
 
       - name: Load custom feeds
         run: |

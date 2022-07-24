@@ -61,17 +61,6 @@ jobs:
           git checkout $CHECK_OUT
           cd ..
 
-      - name: Cache
-        id: cache-toolchains
-        uses: actions/cache@main
-        with:
-          path: |
-            /workdir/openwrt/build_dir/host*
-            /workdir/openwrt/build_dir/tool*
-            /workdir/openwrt/staging_dir/host*
-            /workdir/openwrt/staging_dir/tool*
-          key: ${{ runner.os }}-${{ hashFiles('cache/OrangePi') }}
-
       - name: Load custom feeds
         run: |
           [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
