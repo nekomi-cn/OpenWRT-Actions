@@ -70,6 +70,12 @@ jobs:
             /workdir/openwrt/staging_dir/
           key: ${{ runner.os }}-${{ hashFiles('cache/OrangePi') }}
 
+      - name: Move Cache
+        if: ${{ steps.cache-toolchains.outputs.cache-hit == 'true' }}
+        run: |
+            mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/build_dir/ /workdir/openwrt/build_dir/
+            mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/staging_dir/ /workdir/openwrt/staging_dir/
+
       - name: Load custom feeds
         run: |
           [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
