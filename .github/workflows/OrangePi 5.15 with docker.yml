@@ -74,6 +74,7 @@ jobs:
         if: ${{ steps.cache-toolchains.outputs.cache-hit == 'true' }}
         run: |
             ls -l /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/
+            ls -l /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/openwrt/
             ls -l /workdir/openwrt/
             mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/build_dir/ /workdir/openwrt/build_dir/
             mv /home/runner/work/OpenWRT-Actions/OpenWRT-Actions/staging_dir/ /workdir/openwrt/staging_dir/
