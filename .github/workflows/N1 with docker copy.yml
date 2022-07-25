@@ -10,36 +10,36 @@ on:
         default: "s905d"
         type: choice
         options:
-          - all
-          - s905x3_s905d_s912
-          - a311d
-          - s922x
-          - s922x-n2
-          - s922x-reva
-          - s905x3
-          - s905x2
-          - s905x2-km3
-          - s912
-          - s912-m8s
-          - s905d
-          - s905d-ki
-          - s905x
-          - s905w
-          - s905
-          - s905l3a
+          - "all"
+          - "a311d"
+          - "s922x"
+          - "s922x-n2"
+          - "s922x-reva"
+          - "s905x3"
+          - "s905x2"
+          - "s905x2-km3"
+          - "s912"
+          - "s912-m8s"
+          - "s905d"
+          - "s905d-ki"
+          - "s905x3_s905d_s912"
+          - "s905x"
+          - "s905w"
+          - "s905"
+          - "s905l3a"
       openwrt_kernel:
         description: "Select kernel version"
         required: false
         default: "5.15.50"
         type: choice
         options:
-          - 5.4.200_5.10.125
-          - 5.10.125_5.15.50
-          - 5.15.45_5.18.5
-          - 5.4.200
-          - 5.10.125
-          - 5.15.50
-          - 5.18.5
+          - "5.4.200"
+          - "5.10.125"
+          - "5.15.50"
+          - "5.18.5"
+          - "5.4.200_5.10.125"
+          - "5.10.125_5.15.50"
+          - "5.15.45_5.18.5"
       auto_kernel:
         description: "Auto use the latest kernel"
         required: false
@@ -48,7 +48,7 @@ on:
       openwrt_size:
         description: "Set the rootfs size(Unit: MiB)."
         required: false
-        default: "960"
+        default: "650"
   push:
     branches: [master]
   pull_request:
@@ -164,15 +164,6 @@ jobs:
         if: (!cancelled())
         run: df -hT
 
-      - name: Organize files
-        id: organize
-        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-        run: |
-          cd ${{ env.PACKAGED_OUTPUTPATH }}
-          rm -rf packages
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          echo "::set-output name=status::success"
-
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
         if: env.PACKAGED_STATUS == 'success' && !cancelled()
@@ -180,24 +171,32 @@ jobs:
           name: OpenWrt_s905d_n1_lede_${{ env.PACKAGED_OUTPUTDATE }}
           path: ${{ env.PACKAGED_OUTPUTPATH }}
 
-      - name: Upload OpenWrt Firmware to Release
-        uses: ncipollo/release-action@main
-        if: steps.compile.outputs.status == 'success' && env.PACKAGED_STATUS == 'success' && !cancelled()
-        with:
-          tag: OpenWrt_S905D_N1_Lede_${{ env.PACKAGED_OUTPUTDATE }}
-          artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
-          allowUpdates: true
-          token: ${{ secrets.GH_TOKEN }}
-          body: |
-            This is OpenWrt firmware for Amlogic s905d N1 box
-            * Firmware information
-            Default IP: 192.168.43.1
-            Default username: root
-            Default password: password
-            Default WIFI name: OpenWrt
-            Default WIFI password: none
-            Install to EMMC: Login to OpenWrt → System → Amlogic Service → Install OpenWrt
 
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "::set-output name=release_tag::OpenWRT-S905d_Lede-N1-With-Docker-$(date "+%Y.%m.%d")"
+          touch release.txt
+          echo "This is OpenWrt firmware for Amlogic s905d N1 box" > release.txt
+          echo "* Firmware information" >> release.txt
+          echo "Default IP: 192.168.43.1" >> release.txt
+          echo "Default username: root" >> release.txt
+          echo "Default password: password" >> release.txt
+          echo "Default WIFI name: OpenWrt" >> release.txt
+          echo "Default WIFI password: none" >> release.txt
+          echo "Install to EMMC: Login to OpenWrt → System → Amlogic Service → Install OpenWrt" >> release.txt
+          echo "::set-output name=status::success"
+
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@v1
+        if: steps.compile.outputs.status == 'success' && steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ env.PACKAGED_OUTPUTPATH }}/*
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main

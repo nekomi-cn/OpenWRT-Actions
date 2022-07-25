@@ -135,7 +135,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-$(date "+%Y.%m.%d")"
+          echo "::set-output name=release_tag::OpenWRT-Lede-5.18-With-Docker-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "::set-output name=status::success"
 
