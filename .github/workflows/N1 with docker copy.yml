@@ -4,9 +4,14 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
+      input_status:
+        description: "Check Input Status"
+        required: true
+        default: true
+        type: boolean
       openwrt_soc:
         description: "Select Amlogic SoC"
-        required: false
+        required: true
         default: "s905d"
         type: choice
         options:
@@ -29,7 +34,7 @@ on:
           - "s905l3a"
       openwrt_kernel:
         description: "Select kernel version"
-        required: false
+        required: true
         default: "5.15.50"
         type: choice
         options:
@@ -42,12 +47,12 @@ on:
           - "5.15.45_5.18.5"
       auto_kernel:
         description: "Auto use the latest kernel"
-        required: false
+        required: true
         default: true
         type: boolean
       openwrt_size:
         description: "Set the rootfs size(Unit: MiB)."
-        required: false
+        required: true
         default: "650"
   push:
     branches: [master]
@@ -150,8 +155,18 @@ jobs:
           [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
           echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-      - name: Build OpenWrt firmware
-        if: steps.compile.outputs.status == 'success' && !cancelled()
+      - name: Build OpenWrt firmware - Automatic
+        if: github.event.inputs.input_status == false && steps.compile.outputs.status == 'success' && !cancelled()
+        uses: ophub/amlogic-s9xxx-openwrt@main
+        with:
+          openwrt_path: openwrt/bin/targets/*/*/*rootfs.tar.gz
+          openwrt_soc: "s905d"
+          openwrt_kernel: "5.15.50"
+          auto_kernel: true
+          openwrt_size: 650
+
+      - name: Build OpenWrt firmware - Manual
+        if: github.event.inputs.input_status && steps.compile.outputs.status == 'success' && !cancelled()
         uses: ophub/amlogic-s9xxx-openwrt@main
         with:
           openwrt_path: openwrt/bin/targets/*/*/*rootfs.tar.gz
