@@ -12,7 +12,7 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_BRANCH: "20220716"
   CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: "config/OrangePi-5.15-with-docker.config"
