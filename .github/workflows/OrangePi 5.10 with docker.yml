@@ -12,7 +12,7 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: "20220716"
+  REPO_BRANCH: master
   CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: "config/OrangePi-5.10-with-docker.config"
@@ -39,7 +39,7 @@ jobs:
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/nekomi-cn/OrangePi-R1-Plus-LTS-Lede/master/depends-ubuntu-2004)
+          sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/nekomi-cn/OpenWRT-Actions/master/depends-ubuntu-2004)
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           sudo timedatectl set-timezone "$TZ"
