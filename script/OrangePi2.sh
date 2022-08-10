@@ -19,7 +19,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/M
 rm -rf feeds/luci/themes/luci-theme-argon/
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/themes/luci-theme-argon/
 
-wget --no-check-certificate -O package/boot/uboot-rockchip/Makefile https://raw.githubusercontent.com/coolsnowwolf/lede/53686de196c0827aac3a337a4751b0353f289fcc/package/boot/uboot-rockchip/Makefile
+# wget --no-check-certificate -O package/boot/uboot-rockchip/Makefile https://raw.githubusercontent.com/coolsnowwolf/lede/53686de196c0827aac3a337a4751b0353f289fcc/package/boot/uboot-rockchip/Makefile
 wget --no-check-certificate -O package/boot/uboot-rockchip/patches/103-tools-disable-TOOLS_LIBCRYPTO.patch https://raw.githubusercontent.com/coolsnowwolf/lede/53686de196c0827aac3a337a4751b0353f289fcc/package/boot/uboot-rockchip/patches/103-tools-disable-TOOLS_LIBCRYPTO.patch
 wget --no-check-certificate -O package/boot/uboot-rockchip/patches/201-scripts-remove-dependency-on-swig.patch https://raw.githubusercontent.com/coolsnowwolf/lede/53686de196c0827aac3a337a4751b0353f289fcc/package/boot/uboot-rockchip/patches/201-scripts-remove-dependency-on-swig.patch
 wget --no-check-certificate -O package/boot/uboot-rockchip/patches/202-spl-remove-dtoc-of-pdata-generation.patch https://raw.githubusercontent.com/coolsnowwolf/lede/53686de196c0827aac3a337a4751b0353f289fcc/package/boot/uboot-rockchip/patches/202-spl-remove-dtoc-of-pdata-generation.patch
