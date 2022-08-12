@@ -95,7 +95,7 @@ jobs:
         working-directory: openwrt
         run: |
           sed -i "s/5.*/${{github.event.inputs.openwrt_kernel}}g" target/linux/rockchip/Makefile
-          echo "sed -i 's/5.*/${{github.event.inputs.openwrt_kernel}}g' target/linux/rockchip/Makefile"
+          echo "sed -i 's/5.*/${{github.event.inputs.openwrt_kernel}}/g' target/linux/rockchip/Makefile"
           
       - name: Update feeds
         working-directory: openwrt
