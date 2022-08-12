@@ -67,7 +67,7 @@ env:
   CHECK_OUT: ""
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: config/n1.config
-  DIY_P1_SH: script/n1.sh
+  DIY_P1_SH: script/DIY1.sh
   DIY_P2_SH: script/n1-2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
