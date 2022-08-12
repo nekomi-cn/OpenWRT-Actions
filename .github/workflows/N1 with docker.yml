@@ -191,7 +191,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-With-Docker-$(date "+%Y.%m.%d")-N1-5.15"
+          echo "::set-output name=release_tag::N1-OpenWRT-Lede-With-Docker-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "This is OpenWrt firmware for Amlogic s905d N1 box" > release.txt
           echo "* Firmware information" >> release.txt

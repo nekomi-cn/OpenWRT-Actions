@@ -85,18 +85,17 @@ jobs:
           cd openwrt
           $GITHUB_WORKSPACE/$DIY_P1_SH
 
-      - name: Modify the kernel version
+      - name: Modify the kernel version to the default
         if: github.event.inputs.input_status == false && !cancelled()
         working-directory: openwrt
-        run: sed -i 's/5.*/5.18/g' target/linux/rockchip/Makefile
+        run: |
+          sed -i 's/5.*/5.18/g' target/linux/rockchip/Makefile
 
-      - name: Modify the kernel version
+      - name: Modify the kernel version to selected
         if: github.event.inputs.input_status && !cancelled()
         working-directory: openwrt
         run: |
           sed -i "s/5.*/${{github.event.inputs.openwrt_kernel}}/g" target/linux/rockchip/Makefile
-          echo "sed -i 's/5.*/${{github.event.inputs.openwrt_kernel}}/g' target/linux/rockchip/Makefile"
-          cat target/linux/rockchip/Makefile
           
       - name: Update feeds
         working-directory: openwrt
@@ -165,7 +164,7 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::OpenWRT-Lede-With-Docker-$(date "+%Y.%m.%d")-R1P-5.18"
+          echo "::set-output name=release_tag::OrangePi-R1Plus-Lts-OpenWRT-Lede-With-Docker-$(date "+%Y.%m.%d")"
           touch release.txt
           echo "::set-output name=status::success"
 
