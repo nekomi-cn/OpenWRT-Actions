@@ -163,7 +163,7 @@ jobs:
         with:
           openwrt_path: openwrt/bin/targets/*/*/*rootfs.tar.gz
           openwrt_soc: "s905d"
-          openwrt_kernel: "5.15.50"
+          openwrt_kernel: "5.19.1"
           auto_kernel: true
           openwrt_size: 650
 
