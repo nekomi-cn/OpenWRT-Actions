@@ -29,7 +29,7 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: "20220716"
+  REPO_BRANCH: "master"
   CHECK_OUT:
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: config/OrangePi.config
@@ -89,7 +89,7 @@ jobs:
         if: github.event.inputs.input_status == false && !cancelled()
         working-directory: openwrt
         run: |
-          sed -i 's/5.*/5.18/g' target/linux/rockchip/Makefile
+          sed -i 's/5.*/5.19/g' target/linux/rockchip/Makefile
 
       - name: Modify the kernel version to selected
         if: github.event.inputs.input_status && !cancelled()
