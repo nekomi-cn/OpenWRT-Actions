@@ -165,6 +165,11 @@ jobs:
         run: |
           echo "::set-output name=release_tag::OpenWRT-Lede-With-Docker-$(date "+%Y.%m.%d")-(OrangePi_R1_Plus_LTS)"
           touch release.txt
+          echo "This is OpenWrt firmware for OrangePi R1 Plus LTS" > release.txt
+          echo "* Firmware information" >> release.txt
+          echo "Default IP: 192.168.8.1" >> release.txt
+          echo "Default username: root" >> release.txt
+          echo "Default password: password" >> release.txt
           echo "::set-output name=status::success"
 
       - name: Upload firmware to release
