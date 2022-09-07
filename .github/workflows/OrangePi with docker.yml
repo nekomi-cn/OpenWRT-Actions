@@ -95,7 +95,7 @@ jobs:
         working-directory: openwrt
         run: |
           sed -i "s/5.*/${{github.event.inputs.openwrt_kernel}}/g" target/linux/rockchip/Makefile
-          
+
       - name: Update feeds
         working-directory: openwrt
         run: ./scripts/feeds update -a
@@ -176,7 +176,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: steps.compile.outputs.status == 'success' && steps.tag.outputs.status == 'success' && !cancelled()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           body_path: release.txt
