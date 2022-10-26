@@ -12,13 +12,13 @@ on:
       openwrt_kernel:
         description: "Select Linux Kernel"
         required: true
-        default: "5.18"
+        default: "6.0"
         type: choice
         options:
           - "5.4"
           - "5.10"
           - "5.15"
-          - "5.19"
+          - "6.0"
   push:
     branches: [master]
   pull_request:
