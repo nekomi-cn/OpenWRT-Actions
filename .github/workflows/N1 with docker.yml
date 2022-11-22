@@ -41,12 +41,11 @@ on:
           - "5.4.210_5.10.135_5.15.50"
           - "5.4.210_5.10.135"
           - "5.10.135_5.15.50"
-          - "5.15.50_5.19.1"
+          - "5.15.50_6.0.1"
           - "5.4.210"
           - "5.10.135"
           - "5.15.50"
-          - "5.18.15"
-          - "5.19.1"
+          - "6.0.1"
       auto_kernel:
         description: "Auto use the latest kernel"
         required: true
@@ -171,7 +170,7 @@ jobs:
         with:
           openwrt_path: openwrt/bin/targets/*/*/*rootfs.tar.gz
           openwrt_soc: "s905d"
-          openwrt_kernel: "5.19.1"
+          openwrt_kernel: "5.15.50"
           auto_kernel: true
           openwrt_size: 650
 
