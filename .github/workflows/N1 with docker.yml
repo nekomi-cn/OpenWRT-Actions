@@ -55,12 +55,12 @@ on:
         description: "Set the rootfs size(Unit: MiB)."
         required: true
         default: "650"
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-  schedule:
-    - cron: 0 0 * * *
+  # push:
+  #   branches: [master]
+  # pull_request:
+  #   branches: [master]
+  # schedule:
+  #   - cron: 0 0 * * *
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -162,6 +162,9 @@ jobs:
           df -hT $PWD
           rm -rf bin/targets/armvirt/64/packages/
           rm -rf build_dir/
+          rm -rf tmp/
+          rm -rf staging_dir/
+          rm -rf dl/
           df -hT $PWD
 
       - name: Build OpenWrt firmware - Automatic
