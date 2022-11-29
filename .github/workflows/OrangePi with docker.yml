@@ -2,7 +2,7 @@ name: OrangePi OpenWRT With Docker
 
 on:
   repository_dispatch:
-  # workflow_dispatch:
+  workflow_dispatch:
   #   inputs:
   #     input_status:
   #       description: "Check Input Status"
