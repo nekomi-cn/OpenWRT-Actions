@@ -1,0 +1,87 @@
+name: JCGQ10PRO
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    # inputs:
+    #   input_status:
+    #     description: "Check Input Status"
+    #     required: true
+    #     default: true
+    #     type: boolean
+    #   openwrt_soc:
+    #     description: "Select Amlogic SoC"
+    #     required: true
+    #     default: "s905d"
+    #     type: choice
+    #     options:
+    #       - "all"
+  # push:
+  #   branches: [master]
+  # pull_request:
+  #   branches: [master]
+  # schedule:
+  #   - cron: 0 0 * * *
+
+env:
+  REPO_URL: git clone https://github.com/SWRT-dev/swrt-gpl
+  REPO_BRANCH: master
+  CHECK_OUT: ""
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Initialization environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(curl -fsSL https://raw.githubusercontent.com/nekomi-cn/OrangePi-R1-Plus-LTS-Lede/master/depends-ubuntu-1804)
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo timedatectl set-timezone "$TZ"
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
+
+      - name: Clone source code
+        working-directory: /workdir
+        run: |
+          df -hT $PWD
+          git clone $REPO_URL -b $REPO_BRANCH swrt-gpl
+          ln -sf /workdir/swrt-gpl $GITHUB_WORKSPACE/swrt-gpl
+
+      - name: Check out mtk toolchains
+        working-directory: /workdir
+        run: |
+          df -hT $PWD
+          git clone https://github.com/SWRT-dev/mtk-toolchains mtk-toolchains
+          cd mtk-toolchains
+          sudo ln -sf $(pwd)/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.24 /opt/
+          cd ..
+
+      - name: Compile the firmware
+        working-directory: /workdir
+        id: compile
+        run: |
+          cd swrt-gpl/release/src-mtk-mips
+          make swrt-jcg-q10pro
+          echo "::set-output name=status::success"
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+      - name: Check space usage
+        if: (!cancelled())
+        run: df -hT
+
+      - name: Upload firmware directory
+        uses: actions/upload-artifact@main
+        if: env.PACKAGED_STATUS == 'success' && !cancelled()
+        with:
+          name: JCGQ10PRO_${{ env.PACKAGED_OUTPUTDATE }}
+          path: swrt-gpl/release/src-mtk-mips/image
