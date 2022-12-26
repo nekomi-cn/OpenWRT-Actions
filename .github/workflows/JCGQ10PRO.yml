@@ -24,7 +24,7 @@ on:
   #   - cron: 0 0 * * *
 
 env:
-  REPO_URL: git clone https://github.com/SWRT-dev/swrt-gpl
+  REPO_URL: https://github.com/SWRT-dev/swrt-gpl
   REPO_BRANCH: master
   CHECK_OUT: ""
   UPLOAD_BIN_DIR: false
