@@ -16,6 +16,3 @@
 ### OrangePi 5.18 演示
 ![状态](./images/OrangePi-5.18-Status.png)
 ![服务](./images/OrangePi-5.18services.png)
-### N1 +o 固件
-![状态](./images/N1-Status.png)
-![状态](./images/N1-Service.png)
