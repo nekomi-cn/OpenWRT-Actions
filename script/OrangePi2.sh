@@ -23,3 +23,6 @@ sed -i 's/Bootstrap theme/Argon theme/g' feeds/luci/collections/luci/Makefile
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 rm -rf feeds/luci/themes/luci-theme-argon/
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/themes/luci-theme-argon/
+
+# Change Golang Version
+rm -rf feeds/packages/lang/golang && svn export https://github.com/sbwml/packages_lang_golang/branches/20.x feeds/packages/lang/golang
