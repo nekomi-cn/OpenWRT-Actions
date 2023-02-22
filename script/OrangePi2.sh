@@ -2,7 +2,7 @@
 ###
 # @Author: iRorikon
 # @Date: 2022-09-07 16:45:38
-# @FilePath: \OpenWRT-Actions\script\OrangePi2.sh
+ # @FilePath: \OpenWRT-Actions\script\OrangePi2.sh
 ###
 #
 # Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
@@ -25,4 +25,4 @@ rm -rf feeds/luci/themes/luci-theme-argon/
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git feeds/luci/themes/luci-theme-argon/
 
 # Change Golang Version
-rm -rf feeds/packages/lang/golang && svn export https://github.com/sbwml/packages_lang_golang/branches/20.x feeds/packages/lang/golang
+# rm -rf feeds/packages/lang/golang && svn export https://github.com/sbwml/packages_lang_golang/branches/20.x feeds/packages/lang/golang
